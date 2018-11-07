@@ -1,0 +1,11 @@
+version: '3.5'
+services:
+  dotnetcore-builder:
+    image: ${REGISTRY}dotnetcore:builder
+    build: 
+      context: .
+      dockerfile: Dockerfile      
+      args:
+        TimeZone: "America/Cuiaba"
+        SONAR_SCANNER_DOTNET_VERSION: "4.4.2"
+        COVERLET_CONSOLE_VERSION: "1.2.1"
