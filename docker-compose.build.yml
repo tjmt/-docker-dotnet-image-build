@@ -3,7 +3,7 @@
 version: '3.5'
 services:
   dotnetcore-builder:
-    image: ${REGISTRY}dotnetcore:builder
+    image: tjmt/dotnetcore:builder
     build: 
       context: .
       dockerfile: Dockerfile      
