@@ -1,8 +1,5 @@
 #!/bin/bash
 
-COVERAGE_PATH="/TestResults/codecoverage"
-RESULT_PATH="/TestResults/result"
-
 dotnet sonarscanner begin /k:"${PROJECT_NAME}" /v:"${PROJECT_VERSION}" /d:sonar.verbose=true /d:sonar.cs.opencover.reportsPaths="${COVERAGE_PATH}/**/coverage.opencover.xml" /d:sonar.cs.vstest.reportsPaths="${RESULT_PATH}/*.trx"
 
 dotnet build ${SOLUTION_NAME} -c ${CONFIGURATION} --no-restore -v m
