@@ -1,4 +1,4 @@
-FROM microsoft/dotnet:2.2-sdk
+FROM microsoft/dotnet:2.1-sdk
 
 #---------Argumentos
 ARG TimeZone
@@ -33,7 +33,7 @@ RUN chmod +x /entrypoint-ci/wait-for-it.sh
 ONBUILD ARG CONFIGURATION="Release"
 ONBUILD ARG COVERAGE_PATH"/TestResults/codecoverage"
 ONBUILD ARG RESULT_PATH="/TestResults/result"
-ONBUILD ARG SOLUTION_NAME
+ONBUILD ARG SOLUTION_NAME=""
 
 #Criando variaveis de ambientes com os argumentos, necessário para rodar o CI (entrypoint)
 ONBUILD ENV COVERAGE_PATH=$COVERAGE_PATH
@@ -51,7 +51,15 @@ ONBUILD WORKDIR /src
 ONBUILD COPY . .
 
 #Restaurando pacotes nuget da solução
-ONBUILD RUN dotnet restore ${SOLUTION_NAME} -v m
+ONBUILD RUN if [ "${SOLUTION_NAME}" = "" ]; then \  
+                dotnet restore -v m; \
+            else \
+                dotnet restore ${SOLUTION_NAME} -v m; \
+            fi
 
 #Buildando solução
-ONBUILD RUN dotnet build ${SOLUTION_NAME} -c ${CONFIGURATION} --no-restore -v m
+ONBUILD RUN if [ "${SOLUTION_NAME}" = "" ]; then \  
+                dotnet build -c ${CONFIGURATION} --no-restore -v m; \
+            else \
+                dotnet build ${SOLUTION_NAME} -c ${CONFIGURATION} --no-restore -v m; \
+            fi
