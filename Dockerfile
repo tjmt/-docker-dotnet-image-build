@@ -1,10 +1,14 @@
 FROM microsoft/dotnet:2.1-sdk
 
 #---------Argumentos
-ARG TimeZone
-ARG SONAR_SCANNER_DOTNET_VERSION
-ARG COVERLET_CONSOLE_VERSION
-
+ARG TimeZone="America/Cuiaba"
+ARG SONAR_SCANNER_DOTNET_VERSION="4.4.2"
+ARG COVERLET_CONSOLE_VERSION="1.2.1"
+ARG NUGET_SOURCE_EXTERNO="https://api.nuget.org/v3/index.json"
+ARG NUGET_SOURCE_INTERNO
+ARG HTTP_PROXY
+ARG HTTP_PROXY_USER
+ARG HTTP_PROXY_PASSWORD
 
 #---------Configura o TimeZone
 RUN ln -snf /usr/share/zoneinfo/$TimeZone /etc/localtime \
@@ -15,9 +19,10 @@ RUN dotnet tool install --global coverlet.console --version ${COVERLET_CONSOLE_V
 RUN dotnet tool install --global dotnet-sonarscanner --version ${SONAR_SCANNER_DOTNET_VERSION}
 ENV PATH "$PATH:/root/.dotnet/tools/"
 
-
-#---------Copia os arquivos de configurações
-COPY ./config/Nuget.Config /root/.nuget/NuGet/NuGet.Config
+#---------Criando arquivo de configuração do nuget globalmente.
+COPY ./sh/nuget-config-creator.sh nuget-config-creator.sh
+RUN chmod +x nuget-config-creator.sh
+RUN ./nuget-config-creator.sh
 
 #---------Copiando arquivos sh para de continuous integration para entrypoint
 COPY ./entrypoint-ci /entrypoint-ci

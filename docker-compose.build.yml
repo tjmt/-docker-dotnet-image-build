@@ -8,6 +8,11 @@ services:
       context: .
       dockerfile: Dockerfile      
       args:
-        TimeZone: "America/Cuiaba"
-        SONAR_SCANNER_DOTNET_VERSION: "4.4.2"
-        COVERLET_CONSOLE_VERSION: "1.2.1"
+        TimeZone: "America/Cuiaba" #OPCIONAL: default = America/Cuiaba
+        SONAR_SCANNER_DOTNET_VERSION: "4.4.2" #OPCIONAL: default = 4.4.2
+        COVERLET_CONSOLE_VERSION: "1.2.1" #OPCIONAL: default = 1.2.1
+        NUGET_SOURCE_EXTERNO: "https://api.nuget.org/v3/index.json" #OPCIONAL
+        NUGET_SOURCE_INTERNO: "http://packages.tjmt.jus.br/nuget/nuget" #OPCIONAL
+        HTTP_PROXY: "" #OPCIONAL
+        HTTP_PROXY_USER: "" #OPCIONAL
+        HTTP_PROXY_PASSWORD: "" #OPCIONAL
