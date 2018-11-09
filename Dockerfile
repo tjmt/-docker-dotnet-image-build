@@ -22,13 +22,13 @@ ENV PATH "$PATH:/root/.dotnet/tools/"
 #---------Copiando arquivos sh para dentro da imagem
 COPY ./entrypoint-ci /entrypoint-ci
 COPY ./sh /utils
-RUN chmod +x /entrypoint-ci/continuous-integration.sh
-RUN chmod +x /entrypoint-ci/wait-for-it.sh
-RUN chmod +x /utils/nuget-config-creator.sh
+RUN chmod +x /entrypoint-ci/continuous-integration.sh \
+            /entrypoint-ci/wait-for-it.sh \
+            /utils/nuget-config-creator.sh \
+            /utils/copy-project-structure.sh
 
 #---------Criando o arquivo Nuget.config
 RUN /utils/nuget-config-creator.sh
-
 
 #Variaveis de ambiente com valores padrões. É possivel mudar estes valores, informando no docker run ou no docker-compose
 ENV COVERAGE_PATH="/TestResults/codecoverage"
@@ -40,6 +40,7 @@ ENV RESULT_PATH="/TestResults/result"
 #Argumentos para o build
 ONBUILD ARG CONFIGURATION="Release"
 ONBUILD ARG SOLUTION_NAME=""
+ONBUILD ARG PATHS
 
 #Criando variaveis de ambientes com os argumentos, necessário para rodar o CI (entrypoint)
 ONBUILD ENV CONFIGURATION=$CONFIGURATION
@@ -52,7 +53,9 @@ ONBUILD RUN mkdir /app \
 
 #Copiando arquivos para dentro do estágio build
 ONBUILD WORKDIR /src
+
 ONBUILD COPY . .
+ONBUILD RUN /utils/copy-project-structure.sh
 
 #Restaurando pacotes nuget da solução
 ONBUILD RUN if [ "${SOLUTION_NAME}" = "" ]; then \  

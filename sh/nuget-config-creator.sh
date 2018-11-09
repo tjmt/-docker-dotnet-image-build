@@ -3,7 +3,7 @@
 echo '_____________Iniciando criacao do arquivo NuGet.Config_____________'
 
 if [ "${NUGET_SOURCE_EXTERNO}" != "" ]; then \
-    NUGET_FILE_SOURCE_EXTERNO="<add key=\"source_externo\" value=\"$NUGET_SOURCE_EXTERNO\" protocolVersion="3" />";\
+    NUGET_FILE_SOURCE_EXTERNO="<add key=\"source_externo\" value=\"$NUGET_SOURCE_EXTERNO\" protocolVersion=\"3\" />";\
 fi
 
 if [ "${NUGET_SOURCE_INTERNO}" != "" ]; then \
@@ -42,6 +42,7 @@ NUGET_FILE_CONTENT="<?xml version=\"1.0\" encoding=\"utf-8\"?>
         <add key=\"disabled\" value=\"False\" />
     </packageManagement>
     <config>
+        <add key=\"dependencyVersion\" value=\"Highest\" />
         ${NUGET_FILE_HTTP_PROXY}
         ${NUGET_FILE_HTTP_PROXY_USER}
         ${NUGET_FILE_HTTP_PROXY_PASSWORD}
