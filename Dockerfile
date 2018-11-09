@@ -18,26 +18,22 @@ ENV PATH "$PATH:/root/.dotnet/tools/"
 
 #---------Copia os arquivos de configurações
 COPY ./config/Nuget.Config /root/.nuget/NuGet/NuGet.Config
-COPY ./config/SonarQube.Analysis.xml /root/.dotnet/tools/.store/dotnet-sonarscanner/${SONAR_SCANNER_DOTNET_VERSION}/dotnet-sonarscanner/${SONAR_SCANNER_DOTNET_VERSION}/tools/netcoreapp2.1/any/
-
 
 #---------Copiando arquivos sh para de continuous integration para entrypoint
 COPY ./entrypoint-ci /entrypoint-ci
 RUN chmod +x /entrypoint-ci/continuous-integration.sh
 RUN chmod +x /entrypoint-ci/wait-for-it.sh
 
+#Variaveis de ambiente com valores padrões. É possivel mudar estes valores, informando no docker run ou no docker-compose
+ENV COVERAGE_PATH="/TestResults/codecoverage"
+ENV RESULT_PATH="/TestResults/result"
 
 #---------COMANDOS ONBUILD (serão rodados no Dockerfile de quem herdar desta imagem)
-
 #Argumentos
 ONBUILD ARG CONFIGURATION="Release"
-ONBUILD ARG COVERAGE_PATH"/TestResults/codecoverage"
-ONBUILD ARG RESULT_PATH="/TestResults/result"
 ONBUILD ARG SOLUTION_NAME=""
 
 #Criando variaveis de ambientes com os argumentos, necessário para rodar o CI (entrypoint)
-ONBUILD ENV COVERAGE_PATH=$COVERAGE_PATH
-ONBUILD ENV RESULT_PATH=$RESULT_PATH
 ONBUILD ENV CONFIGURATION=$CONFIGURATION
 ONBUILD ENV SOLUTION_NAME=$SOLUTION_NAME
 
