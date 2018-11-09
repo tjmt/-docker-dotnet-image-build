@@ -19,22 +19,25 @@ RUN dotnet tool install --global coverlet.console --version ${COVERLET_CONSOLE_V
 RUN dotnet tool install --global dotnet-sonarscanner --version ${SONAR_SCANNER_DOTNET_VERSION}
 ENV PATH "$PATH:/root/.dotnet/tools/"
 
-#---------Criando arquivo de configuração do nuget globalmente.
-COPY ./sh/nuget-config-creator.sh nuget-config-creator.sh
-RUN chmod +x nuget-config-creator.sh
-RUN ./nuget-config-creator.sh
-
-#---------Copiando arquivos sh para de continuous integration para entrypoint
+#---------Copiando arquivos sh para dentro da imagem
 COPY ./entrypoint-ci /entrypoint-ci
+COPY ./sh /utils
 RUN chmod +x /entrypoint-ci/continuous-integration.sh
 RUN chmod +x /entrypoint-ci/wait-for-it.sh
+RUN chmod +x /utils/nuget-config-creator.sh
+
+#---------Criando o arquivo Nuget.config
+RUN /utils/nuget-config-creator.sh
+
 
 #Variaveis de ambiente com valores padrões. É possivel mudar estes valores, informando no docker run ou no docker-compose
 ENV COVERAGE_PATH="/TestResults/codecoverage"
 ENV RESULT_PATH="/TestResults/result"
 
+
 #---------COMANDOS ONBUILD (serão rodados no Dockerfile de quem herdar desta imagem)
-#Argumentos
+
+#Argumentos para o build
 ONBUILD ARG CONFIGURATION="Release"
 ONBUILD ARG SOLUTION_NAME=""
 
