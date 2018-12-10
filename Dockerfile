@@ -1,9 +1,9 @@
-FROM microsoft/dotnet:2.1-sdk
+FROM microsoft/dotnet:2.2-sdk
 
 #---------Argumentos
 ARG TimeZone="America/Cuiaba"
-ARG SONAR_SCANNER_DOTNET_VERSION="4.4.2"
-ARG COVERLET_CONSOLE_VERSION="1.2.1"
+ARG SONAR_SCANNER_DOTNET_VERSION="4.5.0"
+ARG COVERLET_CONSOLE_VERSION="1.3.0"
 ARG NUGET_SOURCE_EXTERNO="https://api.nuget.org/v3/index.json"
 ARG NUGET_SOURCE_INTERNO
 ARG HTTP_PROXY
@@ -18,6 +18,15 @@ RUN ln -snf /usr/share/zoneinfo/$TimeZone /etc/localtime \
 RUN dotnet tool install --global coverlet.console --version ${COVERLET_CONSOLE_VERSION}
 RUN dotnet tool install --global dotnet-sonarscanner --version ${SONAR_SCANNER_DOTNET_VERSION}
 ENV PATH "$PATH:/root/.dotnet/tools/"
+
+#Necessário para debugar no VsCode
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+       unzip \
+    && rm -rf /var/lib/apt/lists/* \
+    && curl -sSL https://aka.ms/getvsdbgsh | bash /dev/stdin -v latest -l /vsdbg
+
+
 
 #---------Copiando arquivos sh para dentro da imagem
 COPY ./entrypoint-ci /entrypoint-ci
